@@ -1,0 +1,56 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  config:
+    import: "optional:configserver:http://localhost:8888"
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+        # 1. Route for Identity/Auth Service
+        - id: zone-management-auth
+          uri: lb://zone-management-service
+          predicates:
+            - Path=/api/v1/auth/**
+
+        # 2. Route for Zone Management
+        - id: zone-management-service
+          uri: lb://zone-management-service
+          predicates:
+            - Path=/api/zones/**
+
+        # 3. Route for Local IoT Backend
+        - id: iot-backend
+          uri: lb://iot-service
+          predicates:
+            - Path=/api/devices/**
+
+        # 4. Route for Sensor Telemetry
+        - id: sensor-telemetry-service
+          uri: lb://SENSOR-TELEMETRY-SERVICE
+          predicates:
+            - Path=/api/v1/telemetry/**
+
+
+        # 5. Route for Crop Management
+        - id: crop-management-service
+          uri: lb://CROP-MANAGEMENT-SERVICE
+          predicates:
+            - Path=/api/v1/crops/**
+
+        # 6. Route for Automation & Control Service
+        - id: automation-control-service
+          uri: lb://AUTOMATION-CONTROL-SERVICE
+          predicates:
+            - Path=/api/v1/automation/**
+          filters:
+            - AuthenticationFilter
