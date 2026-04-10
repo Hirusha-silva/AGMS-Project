@@ -8,7 +8,7 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/WKBASFernando/agms-config-repo.git
+          uri: https://github.com/Hirusha-silva/agms_config.git
           default-label: main
           search-paths: '{application}' # This helps it find files by name
 
